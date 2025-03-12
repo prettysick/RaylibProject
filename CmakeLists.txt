@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.10)
+project(RaylibProject)
+
+set(CMAKE_C_STANDARD 99)
+
+# Add raylib (assuming it's precompiled and provided as a static library)
+include_directories(include)
+link_directories(external)
+
+# Source files
+set(SOURCES
+    src/main.c
+    src/linked_list.c
+    src/render.c
+)
+
+# Executable
+add_executable(RaylibProject ${SOURCES})
+
+# Linking raylib
+if (WIN32)
+    target_link_libraries(RaylibProject raylib opengl32 gdi32 winmm)
+elseif (APPLE)
+    find_library(COCOA_LIBRARY Cocoa REQUIRED)
+    find_library(IOKIT_LIBRARY IOKit REQUIRED)
+    find_library(COREVIDEO_LIBRARY CoreVideo REQUIRED)
+    target_link_libraries(RaylibProject raylib ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
+elseif (UNIX)
+    target_link_libraries(RaylibProject raylib m pthread dl X11)
+endif()
